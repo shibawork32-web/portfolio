@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>RIDGE パーソナルジムLP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@400;500;700&family=Oswald:wght@500;700&display=swap">
+
+<!--
+  ===========================================
+  パーソナルジム「RIDGE（リッジ）」 LP（ランディングページ）
+  ※架空のジムです。ポートフォリオ用の作品
+  -------------------------------------------
+  LPの流れ：
+    ①ファーストビュー（つかみ＋予約ボタン）
+    ②こんな悩みありませんか？（共感）
+    ③選ばれる3つの理由（解決策）
+    ④料金プラン
+    ⑤入会までの流れ（不安をなくす）
+    ⑥お客様の声（サンプル）
+    ⑦よくある質問
+    ⑧予約フォーム（ゴール）
+  どのセクションも「最後に予約ボタンを押してもらう」ために並べている
+  -------------------------------------------
+  ・色を変えたい → :root の --accent などを変える
+  ・料金を変えたい → 「料金プラン」の <div class="plan"> の中
+  ・質問を増やしたい → <details class="faq-item"> を1個コピペ
+  ===========================================
+-->
+
+<style>
+  /* レイアウト方針：黒い帯（ファーストビュー・予約）と明るい帯を交互に重ねて、
+     スクロールにリズムを作る。数字や英字は細長いOswaldで「計測」っぽく見せる */
+  :root {
+    /* --- 色（ライトモード） --- */
+    --bg: #F2F2EF;          /* 背景：コンクリートっぽい明るいグレー */
+    --surface: #FFFFFF;     /* カードの背景 */
+    --ink: #16181B;         /* 文字色 */
+    --muted: #5D6168;       /* 薄い文字 */
+    --line: #D7D8D4;        /* 区切り線 */
+    --band: #16181B;        /* 黒い帯の背景 */
+    --band-ink: #F2F2EF;    /* 黒い帯の文字 */
+    --band-muted: #A3A7AD;
+    --accent: #E2531F;      /* アクセント：オレンジ寄りの赤（やる気・熱） */
+    --accent-ink: #FFFFFF;  /* アクセント色の上に乗せる文字 */
+
+    /* --- 文字 --- */
+    --font-display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;  /* 大きい見出し：太くて重い */
+    --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;        /* 本文：読みやすい */
+    --font-num: "Oswald", "Arial Narrow", sans-serif;                              /* 数字・英字：細長い */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1C1F23; --surface: #252930; --ink: #ECEDEA; --muted: #A3A7AD;
+      --line: #353A41; --band: #0F1113; --band-ink: #ECEDEA; --band-muted: #8D9198;
+      --accent: #F06A38; --accent-ink: #16181B;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1C1F23; --surface: #252930; --ink: #ECEDEA; --muted: #A3A7AD;
+    --line: #353A41; --band: #0F1113; --band-ink: #ECEDEA; --band-muted: #8D9198;
+    --accent: #F06A38; --accent-ink: #16181B;
+    color-scheme: dark;
+  }
+
+  /* --- 全体 --- */
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  h1, h2, h3 { text-wrap: balance; }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* セクション共通 */
+  section { padding-block: 80px; }
+  .label {
+    font-family: var(--font-num);
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(26px, 4.6vw, 40px);
+    line-height: 1.35;
+    margin: 0 0 40px;
+  }
+
+  /* 予約ボタン（ページ中に何回も出てくる） */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 18px 32px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 4px 0 rgba(0,0,0,.25);
+  }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,.25); }
+  .cta:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+  .cta .arrow { font-family: var(--font-num); }
+  .cta-note { font-size: 13px; margin: 12px 0 0; }
+
+  /* ===== ① ファーストビュー ===== */
+  .hero {
+    background: var(--band);
+    color: var(--band-ink);
+    position: relative;
+    overflow: hidden;
+  }
+  /* 背景の大きな「60」：2か月＝60日を表す飾り */
+  .hero::after {
+    content: "60";
+    position: absolute;
+    right: -0.05em;
+    bottom: -0.28em;
+    font-family: var(--font-num);
+    font-weight: 700;
+    font-size: clamp(220px, 42vw, 520px);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent);
+    opacity: .45;
+    pointer-events: none;
+  }
+  .topbar .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-block: 20px;
+  }
+  .logo {
+    font-family: var(--font-num);
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 0.2em;
+    text-decoration: none;
+  }
+  .logo small {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--band-muted);
+    line-height: 1;
+  }
+  .topbar-tel { font-family: var(--font-num); font-size: 15px; letter-spacing: .08em; color: var(--band-muted); }
+
+  .hero-body {
+    position: relative;
+    z-index: 1;
+    padding-block: 48px 96px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(34px, 7.4vw, 72px);
+    line-height: 1.3;
+    margin: 0 0 24px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .nobr { white-space: nowrap; }
+  .hero-lead { max-width: 30em; color: var(--band-muted); margin: 0 0 32px; font-size: 16px; }
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px;
+  }
+  .hero-stats li { display: flex; flex-direction: column; }
+  .hero-stats strong {
+    font-family: var(--font-num);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-stats strong span { font-size: 18px; margin-left: 2px; }
+  .hero-stats small { font-size: 12px; color: var(--band-muted); letter-spacing: .05em; }
+  .hero .cta-note { color: var(--band-muted); }
+
+  /* ===== ② 悩み ===== */
+  .worries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .worries li {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 18px 20px 18px 52px;
+    position: relative;
+    font-weight: 500;
+  }
+  .worries li::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 24px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--muted);
+    border-radius: 2px;
+  }
+  .worries-answer {
+    margin: 40px 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(20px, 3.4vw, 28px);
+    line-height: 1.5;
+  }
+  .worries-answer em { font-style: normal; color: var(--accent); }
+
+  /* ===== ③ 選ばれる理由 ===== */
+  .reasons { border-top: 1px solid var(--line); }
+  .reason {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding-block: 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .reason-num {
+    font-family: var(--font-num);
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .reason-num small { display: block; font-size: 12px; letter-spacing: .2em; color: var(--muted); margin-top: 8px; font-weight: 500; }
+  .reason-body { min-width: 0; }
+  .reason h3 { font-size: 20px; margin: 0 0 8px; line-height: 1.5; }
+  .reason p { margin: 0; color: var(--muted); }
+
+  /* ===== ④ 料金 ===== */
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .plan {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 32px 28px;
+    position: relative;
+    min-width: 0;
+  }
+  .plan.is-featured { border: 2px solid var(--accent); }
+  .plan-badge {
+    position: absolute;
+    top: -14px;
+    left: 24px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    letter-spacing: .05em;
+  }
+  .plan h3 { font-size: 18px; margin: 0 0 4px; }
+  .plan-sub { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+  .plan-price {
+    font-family: var(--font-num);
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 1;
+    margin: 0 0 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .plan-price small { font-family: var(--font-body); font-size: 14px; font-weight: 500; margin-left: 4px; }
+  .plan-per { font-size: 13px; color: var(--muted); margin: 0 0 20px; }
+  .plan ul { margin: 0; padding: 20px 0 0; border-top: 1px solid var(--line); list-style: none; display: grid; gap: 8px; font-size: 14px; }
+  .plan li::before { content: "＋ "; color: var(--accent); font-weight: 700; }
+  .plans-note { font-size: 13px; color: var(--muted); margin: 20px 0 0; }
+
+  /* ===== ⑤ 流れ ===== */
+  .flow {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    counter-reset: step;
+  }
+  .flow li {
+    counter-increment: step;
+    border-top: 4px solid var(--ink);
+    padding-top: 16px;
+    min-width: 0;
+  }
+  .flow li::before {
+    content: "STEP " counter(step);
+    font-family: var(--font-num);
+    font-size: 13px;
+    letter-spacing: .15em;
+    color: var(--accent);
+  }
+  .flow h3 { font-size: 17px; margin: 4px 0 6px; }
+  .flow p { margin: 0; font-size: 14px; color: var(--muted); }
+
+  /* ===== ⑥ お客様の声 ===== */
+  .voices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .voice {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 24px;
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .voice-result {
+    font-family: var(--font-num);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .voice-result small { display: block; font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--muted); }
+  .voice blockquote { margin: 0; font-size: 14px; flex: 1; }
+  .voice figcaption { font-size: 12px; color: var(--muted); }
+  .sample-note { font-size: 12px; color: var(--muted); margin: 16px 0 0; }
+
+  /* ===== ⑦ よくある質問 ===== */
+  .faq { border-top: 1px solid var(--line); }
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 20px 40px 20px 0;
+    font-weight: 700;
+    position: relative;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::before { content: "Q. "; font-family: var(--font-num); color: var(--accent); }
+  /* 右側の＋が、開くと×に回る */
+  .faq-item summary::after {
+    content: "+";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-num);
+    font-size: 24px;
+    transition: transform .2s;
+  }
+  .faq-item[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+  .faq-item p { margin: 0 0 20px; color: var(--muted); }
+
+  /* ===== ⑧ 予約フォーム ===== */
+  .booking { background: var(--band); color: var(--band-ink); }
+  .booking-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: start; }
+  .booking-grid > * { min-width: 0; }
+  .booking p { color: var(--band-muted); }
+  .booking .perks { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 10px; }
+  .booking .perks li { padding-left: 28px; position: relative; }
+  .booking .perks li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .form { display: grid; gap: 16px; }
+  .field { display: grid; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 700; }
+  .field label .req { color: var(--accent); margin-left: 6px; font-size: 11px; }
+  .field input, .field select {
+    font: inherit;
+    font-size: 16px;            /* 16px未満だとiPhoneで勝手に拡大されるので16px */
+    padding: 12px 14px;
+    border: 1px solid var(--band-muted);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--band-ink);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .field select option { color: #16181B; }
+  .field input:focus, .field select:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .field-error { font-size: 12px; color: var(--accent); min-height: 0; margin: 0; }
+  .form .cta { justify-content: center; width: 100%; }
+  .form-done {
+    border: 2px solid var(--accent);
+    padding: 24px;
+  }
+  .form-done h3 { margin: 0 0 8px; font-size: 18px; }
+  .form-done p { margin: 0; }
+
+  /* --- フッター --- */
+  footer { padding-block: 32px 96px; font-size: 12px; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* --- スマホで画面下に出る予約ボタン --- */
+  .sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    background: var(--band);
+    border-top: 1px solid var(--line);
+    display: none;
+  }
+  .sticky-cta .cta { width: 100%; justify-content: center; padding-block: 14px; box-sizing: border-box; }
+
+  /* --- タブレット・スマホ --- */
+  @media (max-width: 860px) {
+    .flow { grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
+    .voices { grid-template-columns: 1fr; }
+    .booking-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 640px) {
+    section { padding-block: 56px; }
+    .worries { grid-template-columns: 1fr; }
+    .reason { grid-template-columns: 1fr; gap: 8px; }
+    .reason-num { font-size: 48px; }
+    .plans { grid-template-columns: 1fr; gap: 28px; }
+    .topbar-tel { display: none; }
+    .hero-stats strong { font-size: 32px; }
+    .sticky-cta { display: block; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta, .faq-item summary::after { transition: none; }
+  }
+</style>
+
+<!-- ===== ① ファーストビュー ===== -->
+<header class="hero">
+  <div class="topbar">
+    <div class="wrap">
+      <a class="logo" href="#top">RIDGE<small>PERSONAL GYM</small></a>
+      <span class="topbar-tel">TEL 000-0000-0000</span>
+    </div>
+  </div>
+  <div class="wrap hero-body" id="top">
+    <p class="label">みどり町駅 徒歩3分 / 完全個室</p>
+    <h1><span class="nobr">2か月で、</span><br><span class="nobr">鏡を見るのが</span><br><em class="nobr">楽しみになる。</em></h1>
+    <p class="hero-lead">運動が苦手でも、続かなかった人でも大丈夫。専属トレーナーが週2回、あなたのペースに合わせてマンツーマンで見ます。</p>
+    <ul class="hero-stats">
+      <li><strong>60<span>日</span></strong><small>のプログラム</small></li>
+      <li><strong>50<span>分</span></strong><small>1回のトレーニング</small></li>
+      <li><strong>1<span>対</span>1</strong><small>専属トレーナー制</small></li>
+    </ul>
+    <a class="cta" href="#booking">無料カウンセリングを予約する <span class="arrow">→</span></a>
+    <p class="cta-note">所要時間60分・その場での勧誘はしません</p>
+  </div>
+</header>
+
+<main>
+  <!-- ===== ② こんな悩み ===== -->
+  <section>
+    <div class="wrap">
+      <p class="label">PROBLEM</p>
+      <h2 class="section-title">こんなこと、ありませんか？</h2>
+      <ul class="worries">
+        <li>ジムに入会したけど、3回で行かなくなった</li>
+        <li>何をやればいいのか、正直わからない</li>
+        <li>食事制限がつらくて、すぐリバウンドする</li>
+        <li>人の目が気になって、大きいジムは苦手</li>
+      </ul>
+      <p class="worries-answer">続かないのは、意志が弱いからじゃない。<br><em>一人でやっているから</em>です。</p>
+    </div>
+  </section>
+
+  <!-- ===== ③ 選ばれる3つの理由 ===== -->
+  <section>
+    <div class="wrap">
+      <p class="label">REASON</p>
+      <h2 class="section-title">RIDGEが選ばれる3つの理由</h2>
+      <div class="reasons">
+        <div class="reason">
+          <p class="reason-num">01<small>TRAINER</small></p>
+          <div class="reason-body">
+            <h3>最後まで同じトレーナーが担当</h3>
+            <p>毎回担当が変わることはありません。体の変化も、その日の疲れ具合も、同じ人が見ているから無理なく続けられます。</p>
+          </div>
+        </div>
+        <div class="reason">
+          <p class="reason-num">02<small>FOOD</small></p>
+          <div class="reason-body">
+            <h3>食べない我慢より、選び方を覚える</h3>
+            <p>毎日の食事を写真で送るだけ。コンビニや外食でも選べるメニューを提案するので、プログラムが終わってもリバウンドしにくくなります。</p>
+          </div>
+        </div>
+        <div class="reason">
+          <p class="reason-num">03<small>PRIVATE</small></p>
+          <div class="reason-body">
+            <h3>完全個室で、人の目を気にしない</h3>
+            <p>トレーニングルームは全部個室。ウェアやタオルも無料で貸し出すので、仕事帰りに手ぶらで寄れます。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ④ 料金プラン ===== -->
+  <section>
+    <div class="wrap">
+      <p class="label">PRICE</p>
+      <h2 class="section-title">料金プラン</h2>
+      <div class="plans">
+        <div class="plan is-featured">
+          <span class="plan-badge">いちばん人気</span>
+          <h3>2か月集中コース</h3>
+          <p class="plan-sub">週2回 × 8週間（全16回）</p>
+          <p class="plan-price">198,000<small>円（税込）</small></p>
+          <p class="plan-per">1回あたり 12,375円</p>
+          <ul>
+            <li>毎日の食事アドバイス</li>
+            <li>ウェア・タオル・シューズ無料</li>
+            <li>終了後の自主トレメニュー付き</li>
+          </ul>
+        </div>
+        <div class="plan">
+          <h3>月4回コース</h3>
+          <p class="plan-sub">週1回ペースで通いたい人向け</p>
+          <p class="plan-price">39,600<small>円／月（税込）</small></p>
+          <p class="plan-per">1回あたり 9,900円</p>
+          <ul>
+            <li>週1回の食事チェック</li>
+            <li>ウェア・タオル・シューズ無料</li>
+            <li>1か月ごとに続けるか選べる</li>
+          </ul>
+        </div>
+      </div>
+      <p class="plans-note">別途、入会金 33,000円（税込）がかかります。無料カウンセリング当日に入会すると入会金は0円です。</p>
+    </div>
+  </section>
+
+  <!-- ===== ⑤ 入会までの流れ ===== -->
+  <section>
+    <div class="wrap">
+      <p class="label">FLOW</p>
+      <h2 class="section-title">入会までの流れ</h2>
+      <ol class="flow">
+        <li>
+          <h3>フォームから予約</h3>
+          <p>このページの下のフォームから、希望の日時を送ってください。</p>
+        </li>
+        <li>
+          <h3>無料カウンセリング</h3>
+          <p>体組成を測って、目標と今の生活リズムを聞きます（約60分）。</p>
+        </li>
+        <li>
+          <h3>体験トレーニング</h3>
+          <p>希望する人だけ、その場で20分ほど実際に体を動かします。</p>
+        </li>
+        <li>
+          <h3>入会・スタート</h3>
+          <p>家に帰ってゆっくり考えてからでも大丈夫です。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== ⑥ お客様の声 ===== -->
+  <section>
+    <div class="wrap">
+      <p class="label">VOICE</p>
+      <h2 class="section-title">お客様の声</h2>
+      <div class="voices">
+        <figure class="voice">
+          <p class="voice-result">−6.2kg<small>2か月集中コース</small></p>
+          <blockquote>3日坊主の自分が、2か月休まず通えたのが一番の驚きです。トレーナーさんと話すのが楽しみになっていました。</blockquote>
+          <figcaption>30代・会社員 Kさん</figcaption>
+        </figure>
+        <figure class="voice">
+          <p class="voice-result">体脂肪 −5%<small>2か月集中コース</small></p>
+          <blockquote>食事を減らすんじゃなくて、選び方を変えるだけで、こんなに変わるとは思いませんでした。</blockquote>
+          <figcaption>20代・大学生 Tさん</figcaption>
+        </figure>
+        <figure class="voice">
+          <p class="voice-result">腰痛が軽く<small>月4回コース</small></p>
+          <blockquote>個室なので、運動が苦手でも恥ずかしくなかったです。デスクワークで固まっていた腰がだいぶ楽になりました。</blockquote>
+          <figcaption>40代・事務職 Mさん</figcaption>
+        </figure>
+      </div>
+      <p class="sample-note">※ポートフォリオ用の架空のサンプルです。実在の人物の感想ではありません。</p>
+    </div>
+  </section>
+
+  <!-- ===== ⑦ よくある質問 ===== -->
+  <section>
+    <div class="wrap">
+      <p class="label">FAQ</p>
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq">
+        <details class="faq-item">
+          <summary>運動がまったくの初心者でも大丈夫ですか？</summary>
+          <p>大丈夫です。会員さんの7割は運動経験がほとんどない人です。最初は軽い動きから始めて、少しずつ重さを上げていきます。</p>
+        </details>
+        <details class="faq-item">
+          <summary>カウンセリングで入会を勧められませんか？</summary>
+          <p>その場で入会を迫ることはしません。料金やプランの説明を聞いて、持ち帰って考えてもらって大丈夫です。</p>
+        </details>
+        <details class="faq-item">
+          <summary>予約の変更やキャンセルはできますか？</summary>
+          <p>前日の20時までなら、LINEで無料で変更できます。それ以降のキャンセルは1回分の消化になります。</p>
+        </details>
+        <details class="faq-item">
+          <summary>何を持っていけばいいですか？</summary>
+          <p>ウェア・タオル・シューズは無料で貸し出すので、手ぶらで来られます。飲み物だけ持ってきてください。</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ⑧ 予約フォーム ===== -->
+  <section class="booking" id="booking">
+    <div class="wrap booking-grid">
+      <div>
+        <p class="label">RESERVATION</p>
+        <h2 class="section-title">まずは60分の<br>無料カウンセリングへ</h2>
+        <p>今の体の状態と、あなたに合ったプランがわかります。入会するかどうかは、そのあとで決めてください。</p>
+        <ul class="perks">
+          <li>体組成測定つき（結果は持ち帰れます）</li>
+          <li>当日入会で入会金 33,000円 → 0円</li>
+          <li>その場での勧誘なし</li>
+        </ul>
+      </div>
+
+      <!-- 送信ボタンを押すと下のJavaScriptが動く。実際には送信されない（ポートフォリオ用） -->
+      <form class="form" id="booking-form" novalidate>
+        <div class="field">
+          <label for="f-name">お名前<span class="req">必須</span></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" placeholder="例）緑 太郎" required>
+          <p class="field-error" id="err-name" hidden>お名前を入力してください</p>
+        </div>
+        <div class="field">
+          <label for="f-tel">電話番号<span class="req">必須</span></label>
+          <input id="f-tel" name="tel" type="tel" autocomplete="tel" placeholder="例）090-0000-0000" required>
+          <p class="field-error" id="err-tel" hidden>電話番号を数字とハイフンで入力してください</p>
+        </div>
+        <div class="field">
+          <label for="f-date">第1希望日<span class="req">必須</span></label>
+          <input id="f-date" name="date" type="date" required>
+          <p class="field-error" id="err-date" hidden>希望日を選んでください</p>
+        </div>
+        <div class="field">
+          <label for="f-time">希望の時間帯</label>
+          <select id="f-time" name="time">
+            <option>10:00〜13:00</option>
+            <option>13:00〜17:00</option>
+            <option selected>17:00〜20:00</option>
+            <option>20:00〜22:00</option>
+          </select>
+        </div>
+        <button class="cta" type="submit">この内容で予約する <span class="arrow">→</span></button>
+      </form>
+
+      <div class="form-done" id="form-done" hidden>
+        <h3>予約を受け付けました（サンプル）</h3>
+        <p>これはポートフォリオ用のサンプルなので、実際には送信されていません。本物のサイトなら、ここで「確認のお電話をします」などの案内を出します。</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© RIDGE PERSONAL GYM</span>
+    <span>※このページは架空のジムを想定したポートフォリオ作品です</span>
+  </div>
+</footer>
+
+<!-- スマホのときだけ画面下にずっと出る予約ボタン -->
+<div class="sticky-cta" id="sticky-cta">
+  <a class="cta" href="#booking">無料カウンセリングを予約 <span class="arrow">→</span></a>
+</div>
+
+<script>
+  // ===== 予約フォームのチェック =====
+  // 空欄や間違った電話番号があったら、その下に赤い文字でエラーを出す
+  (function () {
+    var form = document.getElementById('booking-form');
+    var done = document.getElementById('form-done');
+
+    function check(id, errId, ok) {
+      var input = document.getElementById(id);
+      var err = document.getElementById(errId);
+      var good = ok(input.value.trim());
+      err.hidden = good;
+      input.setAttribute('aria-invalid', good ? 'false' : 'true');
+      return good;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // 本当に送信しないようにする
+      var a = check('f-name', 'err-name', function (v) { return v.length > 0; });
+      var b = check('f-tel', 'err-tel', function (v) { return /^[0-9-]{10,13}$/.test(v); });
+      var c = check('f-date', 'err-date', function (v) { return v.length > 0; });
+      if (a && b && c) {
+        form.hidden = true;
+        done.hidden = false;
+      }
+    });
+  })();
+
+  // ===== スマホの下の予約ボタン =====
+  // 予約フォームが見えているときは、下のボタンを隠す（ボタンが重ならないように）
+  (function () {
+    var sticky = document.getElementById('sticky-cta');
+    var booking = document.getElementById('booking');
+    if (!('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (entries) {
+      sticky.style.visibility = entries[0].isIntersecting ? 'hidden' : 'visible';
+    }).observe(booking);
+  })();
+</script>
+
+</html>

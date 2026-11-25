@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>小麦舎 カフェサイト</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@600&family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+
+<!--
+  ===========================================
+  焼き菓子と珈琲「小麦舎」 ポートフォリオ用サイト
+  ※架空の店舗です
+  -------------------------------------------
+  ・色を変えたい → 下の :root の --accent などを変える
+  ・文字を変えたい → HTML部分の文章を書きかえる
+  ・メニューを増やしたい → <li class="menu-item"> を1個コピペする
+  ===========================================
+-->
+
+<style>
+  /* レイアウト方針：中央寄せの縦一列。セクションごとに左右の余白をそろえる */
+  :root {
+    /* --- 色（ライトモード） --- */
+    --bg: #F4F5F3;        /* 背景：少し緑がかった白 */
+    --surface: #FFFFFF;   /* カードの背景 */
+    --ink: #24221F;       /* 文字色 */
+    --muted: #6E6A64;     /* 薄い文字 */
+    --line: #DEDCD6;      /* 区切り線 */
+    --accent: #8E3F52;    /* アクセント：ベリー色 */
+    --accent-soft: #EBDCDF;
+    --glow-olive: rgba(191, 190, 54, 0.5);  /* 背景のグラデーション：オリーブ色 */
+    --glow-wheat: rgba(214, 170, 100, 0.5);  /* 背景のグラデーション：小麦色 */
+
+    /* --- 文字 ---
+       大きい文字（ロゴ・見出し）→ --font-display：Klee One（ペンで書いたような手書き風）
+       小さい文字（本文・メニュー）→ --font-body：Zen Kaku Gothic New（読みやすいゴシック）
+       フォントを変えたいときは、ここの名前と1〜5行目の Google Fonts のリンクを変える */
+    --font-display: "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    /* ロゴ「小麦舎」だけのフォント：Zen Antique（古い看板や活字のような書体） */
+    --font-logo: "Zen Antique", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+
+  /* ダークモードのときの色 */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1B1A19; --surface: #252321; --ink: #EDEAE4; --muted: #A8A39B;
+      --line: #3A3734; --accent: #D9869A; --accent-soft: #3B2A2F;
+      --glow-olive: rgba(191, 190, 54, 0.12); --glow-wheat: rgba(214, 170, 100, 0.09);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1B1A19; --surface: #252321; --ink: #EDEAE4; --muted: #A8A39B;
+    --line: #3A3734; --accent: #D9869A; --accent-soft: #3B2A2F;
+    --glow-olive: rgba(191, 190, 54, 0.12); --glow-wheat: rgba(214, 170, 100, 0.09);
+    color-scheme: dark;
+  }
+
+  /* --- 全体 --- */
+  body {
+    /* 背景：ふんわりした光を2つ重ねたグラデーション
+       ・右上にオリーブ色、左下に小麦色の光を置いている
+       ・色や濃さを変えたいときは :root の --glow-olive / --glow-wheat を変える
+       ・"at 85% 0%" が光の位置（横 縦）、"55%" が光の広がり */
+    background:
+      radial-gradient(circle at 85% 0%, var(--glow-olive), transparent 55%),
+      radial-gradient(circle at 0% 70%, var(--glow-wheat), transparent 50%),
+      var(--bg);
+    background-attachment: fixed; /* スクロールしても背景の光は動かない */
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.9;
+  }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* 中身の幅をそろえる箱 */
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* --- ヘッダー --- */
+  .header .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-block: 20px;
+  }
+  /* ロゴ「小麦舎」
+     ・大きさを変えたいとき → font-size の clamp(最小, 画面幅に合わせた大きさ, 最大)
+     ・文字の間隔を変えたいとき → letter-spacing */
+  .logo {
+    font-family: var(--font-logo);
+    font-size: clamp(70px, 25vw, 140px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    color: var(--accent);
+  }
+  .nav { display: flex; gap: 20px; font-size: 13px; letter-spacing: 0.08em; }
+  .nav a { text-decoration: none; color: var(--muted); }
+  .nav a:hover { color: var(--accent); }
+
+  /* --- メインビジュアル --- */
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 40px;
+    padding-block: 48px 72px;
+  }
+  .hero-text { min-width: 0; }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5.6vw, 50px);
+    font-weight: 600;
+    line-height: 1.35;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .nobr { white-space: nowrap; } /* この中では改行しない */
+  .hero p { color: var(--muted); max-width: 30em; margin: 0 0 28px; }
+  .btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    transition: background .2s, color .2s;
+  }
+  .btn:hover { background: var(--ink); color: var(--bg); }
+
+  /* 写真 */
+  .hero-photo { border-radius: 10px; }
+
+  /* 写真の枠：中の画像が拡大しても、はみ出た部分を隠す */
+  .photo-frame {
+    overflow: hidden;
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .photo-frame img {
+    display: block;
+    width: 100%;
+    height: auto; /* ← これがないと画像の縦が1024pxのままになる */
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  /* マウスを乗せると写真が少しだけ拡大する */
+  .photo-frame:hover img { transform: scale(1.05); }
+
+  /* ===== 動き ===== */
+  /* ① ページを開いたとき：トップの文字と写真が順番にふわっと出てくる */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero-text > *, .hero-photo {
+    animation: rise .9s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .hero-text > :nth-child(1) { animation-delay: .05s; }
+  .hero-text > :nth-child(2) { animation-delay: .15s; }
+  .hero-text > :nth-child(3) { animation-delay: .3s; }
+  .hero-text > :nth-child(4) { animation-delay: .4s; }
+  .hero-photo { animation-delay: .25s; }
+
+  /* ② スクロールしたとき：写真が画面に入ったらふわっと出てくる
+     （.is-waiting は下のJavaScriptが画面外の写真にだけ付ける） */
+  .reveal { transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .reveal.is-waiting { opacity: 0; transform: translateY(24px); }
+
+  /* --- 各セクション共通 --- */
+  section { padding-block: 64px; border-top: 1px solid var(--line); }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .section-sub { color: var(--muted); font-size: 13px; margin: 0 0 32px; }
+
+  /* --- こだわり --- */
+  .concept-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .concept-list h3 { font-size: 16px; margin: 0 0 8px; }
+  .concept-list p { margin: 0; color: var(--muted); font-size: 14px; }
+  .concept-list li { border-top: 2px solid var(--accent); padding-top: 16px; }
+  .shop-gallery, .tart-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .shop-gallery { margin-top: 40px; }
+  .tart-gallery { margin: 20px 0 28px; }
+  .photo-card { min-width: 0; margin: 0; }
+  .photo-card figcaption { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+  /* --- メニュー --- */
+  .menu-group + .menu-group { margin-top: 40px; }
+  .menu-group h3 {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .menu-list { list-style: none; padding: 0; margin: 0; }
+  .menu-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-block: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .menu-name { min-width: 0; }
+  .menu-name small { display: block; color: var(--muted); font-size: 12px; line-height: 1.6; }
+  .menu-dots { flex: 1; }
+  .menu-price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* --- 店舗情報 --- */
+  .info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .info dl { margin: 0; display: grid; grid-template-columns: 6em 1fr; row-gap: 12px; }
+  .info dt { color: var(--muted); font-size: 13px; }
+  .info dd { margin: 0; }
+  .notice {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px;
+    min-width: 0;
+  }
+  .notice h3 { font-size: 15px; margin: 0 0 8px; }
+  .notice p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  /* --- フッター --- */
+  footer { border-top: 1px solid var(--line); padding-block: 32px; font-size: 12px; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* --- スマホ用（幅が狭いとき） --- */
+  @media (max-width: 720px) {
+    .hero .wrap { grid-template-columns: 1fr; padding-block: 24px 48px; }
+    .concept-list { grid-template-columns: 1fr; }
+    .info { grid-template-columns: 1fr; }
+    .nav { gap: 14px; }
+    .shop-gallery, .tart-gallery { gap: 12px; }
+  }
+
+  /* 「動きを減らす」設定の人には動きをつけない */
+  @media (prefers-reduced-motion: reduce) {
+    .btn, .photo-frame img, .reveal { transition: none; }
+    .hero-text > *, .hero-photo { animation: none; }
+    .photo-frame:hover img { transform: none; }
+    .reveal.is-waiting { opacity: 1; transform: none; }
+  }
+</style>
+
+<!-- ===== ヘッダー ===== -->
+<header class="header">
+  <div class="wrap">
+    <a class="logo" href="#top">小麦舎</a>
+    <nav class="nav">
+      <a href="#concept">こだわり</a>
+      <a href="#menu">メニュー</a>
+      <a href="#info">店舗情報</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ===== メインビジュアル ===== -->
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <p class="eyebrow">焼き菓子と珈琲</p>
+        <h1><span class="nobr">午後三時に、</span><br><span class="nobr">ちいさなご褒美を。</span></h1>
+        <p>毎朝ひとつずつ焼き上げるタルトと、自家焙煎のコーヒー。駅から少し歩いた住宅街の、10席だけのお店です。</p>
+        <a class="btn" href="#menu">メニューを見る</a>
+      </div>
+      <div class="photo-frame hero-photo">
+        <img src="images/fig-cassis-tart.webp" alt="いちじくとカシスを飾ったタルト" width="1536" height="1024">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== こだわり ===== -->
+  <section id="concept">
+    <div class="wrap">
+      <h2 class="section-title">こだわり</h2>
+      <p class="section-sub">毎日食べても飽きない味を目指しています</p>
+      <ul class="concept-list">
+        <li>
+          <h3>国産小麦だけ</h3>
+          <p>北海道産の小麦粉を使い、香ばしさが残るよう低めの温度でじっくり焼いています。</p>
+        </li>
+        <li>
+          <h3>季節のフルーツ</h3>
+          <p>タルトの果物は月ごとに入れ替え。今月は秋らしく、いちじくと和栗です。</p>
+        </li>
+        <li>
+          <h3>週2回の焙煎</h3>
+          <p>コーヒー豆は火曜と金曜に店内で焙煎。焼き菓子に合う中深煎りが中心です。</p>
+        </li>
+      </ul>
+      <div class="shop-gallery" aria-label="小麦舎の店内とコーヒー">
+        <figure class="photo-card reveal">
+          <div class="photo-frame"><img src="images/cafe-interior.webp" alt="木のカウンターとテーブルが並ぶ小麦舎の店内" width="1536" height="1024" loading="lazy"></div>
+          <figcaption>木のぬくもりに包まれた、10席だけの小さな店内。</figcaption>
+        </figure>
+        <figure class="photo-card reveal">
+          <div class="photo-frame"><img src="images/coffee-and-bakes.webp" alt="窓辺のテーブルに置かれたコーヒーと焼き菓子" width="1536" height="1024" loading="lazy"></div>
+          <figcaption>自家焙煎のコーヒーと、毎朝焼き上げるお菓子。</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== メニュー ===== -->
+  <section id="menu">
+    <div class="wrap">
+      <h2 class="section-title">メニュー</h2>
+      <p class="section-sub">価格はすべて税込です</p>
+
+      <div class="menu-group">
+        <h3>TART</h3>
+        <div class="tart-gallery" aria-label="季節のタルト">
+          <figure class="photo-card reveal">
+            <div class="photo-frame"><img src="images/fig-cassis-tart.webp" alt="いちじくとカシスのタルト" width="1536" height="1024" loading="lazy"></div>
+            <figcaption>いちじくとカシスのタルト</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <div class="photo-frame"><img src="images/chestnut-mont-blanc.webp" alt="和栗のクリームを絞ったモンブランタルト" width="1536" height="1024" loading="lazy"></div>
+            <figcaption>和栗のモンブランタルト</figcaption>
+          </figure>
+        </div>
+        <ul class="menu-list">
+          <li class="menu-item">
+            <span class="menu-name">いちじくとカシスのタルト<small>10月限定</small></span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥680</span>
+          </li>
+          <li class="menu-item">
+            <span class="menu-name">和栗のモンブランタルト<small>10月限定・数量限定</small></span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥720</span>
+          </li>
+          <li class="menu-item">
+            <span class="menu-name">定番のレモンタルト</span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥580</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="menu-group">
+        <h3>BAKED</h3>
+        <ul class="menu-list">
+          <li class="menu-item">
+            <span class="menu-name">焦がしバターのフィナンシェ</span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥280</span>
+          </li>
+          <li class="menu-item">
+            <span class="menu-name">ほうじ茶のスコーン<small>クロテッドクリーム付き</small></span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥420</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="menu-group">
+        <h3>DRINK</h3>
+        <ul class="menu-list">
+          <li class="menu-item">
+            <span class="menu-name">本日のコーヒー<small>ホット / アイス</small></span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥500</span>
+          </li>
+          <li class="menu-item">
+            <span class="menu-name">カフェオレ</span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥560</span>
+          </li>
+          <li class="menu-item">
+            <span class="menu-name">紅茶（アールグレイ）</span>
+            <span class="menu-dots"></span>
+            <span class="menu-price">¥520</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 店舗情報 ===== -->
+  <section id="info">
+    <div class="wrap">
+      <h2 class="section-title">店舗情報</h2>
+      <p class="section-sub">お気軽にお立ち寄りください</p>
+      <div class="info">
+        <dl>
+          <dt>営業時間</dt><dd>11:00 – 18:00（L.O. 17:30）</dd>
+          <dt>定休日</dt><dd>月曜・第3火曜</dd>
+          <dt>席数</dt><dd>10席（カウンター4・テーブル6）</dd>
+          <dt>アクセス</dt><dd>みどり町駅 東口から徒歩5分</dd>
+          <dt>電話</dt><dd>000-0000-0000</dd>
+        </dl>
+        <div class="notice">
+          <h3>ホールケーキのご予約</h3>
+          <p>お誕生日などのホールタルトは、3日前までにお電話か店頭でご予約ください。直径15cm（4〜6名分）から承ります。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== フッター ===== -->
+<footer>
+  <div class="wrap">
+    <span>© 小麦舎</span>
+    <span>※このサイトは架空の店舗を想定したポートフォリオ作品です</span>
+  </div>
+</footer>
+
+<script>
+  // 画面の外にある写真だけ、いったん隠しておいて、スクロールで見えたら表示する
+  (function () {
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) return; // 古いブラウザでは何もしない（最初から表示）
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          // 2枚並んだ写真が少しずつずれて出るように、右側を遅らせる
+          var i = Array.prototype.indexOf.call(e.target.parentNode.children, e.target);
+          e.target.style.transitionDelay = (i * 0.12) + 's';
+          e.target.classList.remove('is-waiting');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    items.forEach(function (el) {
+      if (el.getBoundingClientRect().top > window.innerHeight) {
+        el.classList.add('is-waiting');
+        io.observe(el);
+      }
+    });
+  })();
+</script>
+
+</html>
