@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# ★ 公開したサイトのURLに書きかえる
+Sitemap: https://shiba-portfolio.netlify.app/sitemap.xml
