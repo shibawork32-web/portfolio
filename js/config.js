@@ -16,7 +16,7 @@ window.SITE_CONFIG = {
   emailIsPlaceholder: false,         // 仮のアドレスのときだけ true にする
 
   links: {
-    github: '',     // 例）'https://github.com/あなたのID'
+    github: 'https://github.com/shibawork32-web',
     foriio: '',     // 例）'https://www.foriio.com/あなたのID'
     x: '',          // 例）'https://x.com/あなたのID'
     instagram: '',  // 例）'https://www.instagram.com/あなたのID'
